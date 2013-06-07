@@ -13,7 +13,7 @@ module Guard
       UI.info "Starting Sphinx on port #{port}..."
       %x{#{executable} --config #{config} --pidfile}
       UI.info "Sphinx is running with PID #{pid}"
-      Notifier.notify("Sphinx started on port #{port}.", :title => "Sphinx started!", :image => :success)
+      Notifier.notify("Sphinx started on port #{port}.", :title => "Sphinx started!", :image => :success, :group => :sphinx)
       $?.success?
     end
 
@@ -26,7 +26,7 @@ module Guard
      if pid
         UI.info "Sending TERM signal to Sphinx (#{pid})"
         Process.kill("TERM", pid)
-        Notifier.notify("We'll leave the light on...", :title => "Sphinx shutting down.", :image => :pending)
+        Notifier.notify("We'll leave the light on...", :title => "Sphinx shutting down.", :image => :pending, :group => :sphinx)
         true
       end
     end
