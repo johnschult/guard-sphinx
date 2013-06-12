@@ -12,9 +12,21 @@ module Guard
     def start
       UI.info "Starting Sphinx on port #{port}..."
       %x{#{executable} --config #{config} --pidfile}
-      UI.info "Sphinx is running with PID #{pid}"
-      Notifier.notify("Sphinx started on port #{port}.", :title => "Sphinx started!", :image => :success, :group => :sphinx)
-      $?.success?
+      started = $?.success?
+      if started
+        UI.info "Sphinx is running with PID #{pid}"
+        Notifier.notify("Sphinx started on port #{port}.",
+          :title => "Sphinx started!",
+          :image => :success,
+          :group => :sphinx)
+      else
+        UI.error "Sphinx did not start!"
+        Notifier.notify("Sphinx did not start!",
+          :title => "Sphinx problem!",
+          :image => :failed,
+          :group => :sphinx)
+      end
+      started
     end
 
     # Called when `stop|quit|exit|s|q|e + enter` is pressed (when Guard quits).
@@ -23,11 +35,31 @@ module Guard
     # @return [Object] the task result
     #
     def stop
-     if pid
+      if pid
         UI.info "Sending TERM signal to Sphinx (#{pid})"
         Process.kill("TERM", pid)
-        Notifier.notify("We'll leave the light on...", :title => "Sphinx shutting down.", :image => :pending, :group => :sphinx)
-        true
+        stopped = $?.success?
+        if stopped
+          UI.info "Sphinx (#{pid}) was stopped."
+          Notifier.notify("We'll leave the light on...",
+            :title => "Sphinx shutting down.",
+            :image => :pending,
+            :group => :sphinx)
+        else
+          UI.error "Sphinx (#{pid}) was not stopped!"
+          Notifier.notify("Sphinx was not stopped!",
+            :title => "Sphinx problem!",
+            :image => :failed,
+            :group => :sphinx)
+        end
+        stopped
+      else
+        UI.error "Sphinx could not be stopped because there is no PID file!"
+        Notifier.notify("Sphinx could not be stopped because there is no PID file!",
+          :title => "Sphinx problem!",
+          :image => :failed,
+          :group => :sphinx)
+        false
       end
     end
 
