@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Guard::Sphinx::VERSION
   spec.authors       = ["John Schult"]
   spec.email         = ["schult@telmate.com"]
-  spec.description   = "Manages Sphinx server"
-  spec.summary       = "Manages Sphinx server"
+  spec.description   = "Manages a Sphinx server"
+  spec.summary       = "Manages a Sphinx server"
   spec.homepage      = ""
   spec.license       = "MIT"
 
